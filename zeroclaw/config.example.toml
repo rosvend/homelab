@@ -57,3 +57,10 @@ servers = ["browser-use"]
 
 # Until payexec exists, every browsing task is shown for approval: a logged-in cloud agent could otherwise check out.
 # under [risk_profiles.balanced]: always_ask = ["browser-use__run_session", "browser-use__send_task"]
+# read-only status tools never ask ("supervised" level otherwise prompts for every MCP call):
+# auto_approve = ["browser-use__get_session", "browser-use__get_session_messages", "browser-use__list_sessions", "browser-use__list_browser_profiles", "browser-use__stop_session"]
+# The header value must include the scheme: "Bearer <key>". Without it, tools list fine but every call gets a 401.
+
+[pacing]
+# polling a browser session repeats identical get_session calls by design; the loop detector would abort after 5
+loop_ignore_tools = ["browser-use__get_session"]
