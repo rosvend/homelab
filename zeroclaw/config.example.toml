@@ -10,7 +10,9 @@ channels = ["whatsapp.default"]
 
 # Provider-agnostic: add any [providers.models.<type>.<alias>] entry and point model_provider at it.
 [providers.models.anthropic.default]
-model = "claude-sonnet-5-5"
+# shortcut: 4.6 because models >=4.7 return signed thinking blocks unasked, which v0.9.0 replays into a 400 (#12401);
+# go back to claude-sonnet-5-5 once on a release that contains PR #12479.
+model = "claude-sonnet-4-6"
 # api_key is set by quickstart / `zeroclaw config set` (stored encrypted)
 
 [risk_profiles.balanced]
@@ -35,3 +37,18 @@ approval_timeout_secs = 300    # unanswered approvals are denied
 channel = "whatsapp.default"
 agents = ["onix"]
 external_peers = ["+57XXXXXXXXXX"]   # your own number: the only sender allowed to command the agent
+
+# --- Phase 1a: remote browsing via Browser Use Cloud's hosted MCP (no local Chromium) ---
+# Add the server with the API key as an encrypted header:
+#   zeroclaw config set mcp.servers.browser-use.headers.Authorization   (masked prompt: "Bearer <key>")
+[[mcp.servers]]
+name = "browser-use"
+transport = "http"
+url = "https://api.browser-use.com/v3/mcp"
+
+[mcp_bundles.browsing]
+servers = ["browser-use"]
+# agents.onix.mcp_bundles = ["browsing"]
+
+# Until payexec exists, every browsing task is shown for approval: a logged-in cloud agent could otherwise check out.
+# [risk_profiles.balanced] always_ask = ["browser-use__run_session", "browser-use__send_task"]
