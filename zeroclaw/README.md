@@ -62,3 +62,6 @@ The updater doesn't refresh the web dashboard; re-copy `web/dist` from the relea
   - If a chat is already stuck, stop the service and move `~/.zeroclaw/data/sessions/sessions.db*` aside.
 - **The daily and monthly cost caps are not enforced.** Sonnet 5.5 has no built-in price, so add its rates under `[cost.rates]`.
 - **`excluded_tools` under `[channels.whatsapp.*]` is ignored.** Use `[risk_profiles.<name>].excluded_tools` instead.
+
+## Agent prompt files
+Copy `workspace/TOOLS.md` to `~/.zeroclaw/agents/onix/workspace/TOOLS.md`, set your profile id, then restart the service.
