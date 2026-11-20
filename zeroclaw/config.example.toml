@@ -38,6 +38,10 @@ channel = "whatsapp.default"
 agents = ["onix"]
 external_peers = ["+57XXXXXXXXXX"]   # your own number: the only sender allowed to command the agent
 
+# DuckDuckGo (default) rate-limits the Pi's IP. Key: `zeroclaw config set web_search.tavily_api_key` (masked)
+[web_search]
+search_provider = "tavily"
+
 # --- Phase 1a: remote browsing via Browser Use Cloud's hosted MCP (no local Chromium) ---
 # The server entry must exist BEFORE setting its secret header, then:
 #   zeroclaw config set mcp.servers.browser-use.headers.Authorization   (masked prompt: "Bearer <key>")
