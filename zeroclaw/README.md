@@ -35,13 +35,30 @@ Logs:
 - `journalctl --user -u zeroclaw -f`
 - events: `~/.zeroclaw/data/state/runtime-trace.jsonl`
 
+## Update
+The built-in updater checks the download against SHA256SUMS, backs up the current binary, swaps it, runs a smoke test, and rolls back on failure.
+```sh
+zeroclaw update --check                  # what's new?
+zeroclaw update --version <x.y.z>        # pin explicitly; read the release notes first
+systemctl --user restart zeroclaw
+zeroclaw --version && systemctl --user is-active zeroclaw
+```
+The updater doesn't refresh the web dashboard; re-copy `web/dist` from the release tarball if you use it.
+
+**After upgrading to a release that contains PR #12479:**
+1. Set `model = "claude-sonnet-5-5"` and `thinking.default_level = "medium"`.
+2. Restart the service.
+3. Send a message that triggers a tool call, then a follow-up message. The follow-up must not fail.
+
 ## Measured (Pi 5, 4 GB)
 - Daemon RSS: about 55 MB with WhatsApp connected and idle.
 - Reply latency: about 2 s.
 
 ## Known issues (v0.9.0)
 - **`channel list` says WhatsApp is "not compiled".** This is a false alarm: the check only looks at the Cloud API feature. WhatsApp Web works.
-- **"the selected model provider rejected the request".** This is upstream [#12401](https://github.com/zeroclaw-labs/zeroclaw/issues/12401). It is worked around by turning thinking off.
+- **"the selected model provider rejected the request".** This is upstream [#12401](https://github.com/zeroclaw-labs/zeroclaw/issues/12401).
+  - Claude models from 4.7 onwards return signed thinking blocks even when thinking is off. v0.9.0 replays them after editing the history, and the API rejects the request.
+  - Workaround: `claude-sonnet-4-6` with `thinking.default_level = "off"`.
   - If a chat is already stuck, stop the service and move `~/.zeroclaw/data/sessions/sessions.db*` aside.
 - **The daily and monthly cost caps are not enforced.** Sonnet 5.5 has no built-in price, so add its rates under `[cost.rates]`.
 - **`excluded_tools` under `[channels.whatsapp.*]` is ignored.** Use `[risk_profiles.<name>].excluded_tools` instead.

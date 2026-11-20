@@ -10,7 +10,9 @@ channels = ["whatsapp.default"]
 
 # Provider-agnostic: add any [providers.models.<type>.<alias>] entry and point model_provider at it.
 [providers.models.anthropic.default]
-model = "claude-sonnet-5-5"
+# shortcut: 4.6 because models >=4.7 return signed thinking blocks unasked, which v0.9.0 replays into a 400 (#12401);
+# go back to claude-sonnet-5-5 once on a release that contains PR #12479.
+model = "claude-sonnet-4-6"
 # api_key is set by quickstart / `zeroclaw config set` (stored encrypted)
 
 [risk_profiles.balanced]
