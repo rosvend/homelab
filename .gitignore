@@ -1,0 +1,5 @@
+# never commit real agent state/secrets
+zeroclaw/config.toml
+.secret_key
+*.db
+.env

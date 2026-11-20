@@ -1,0 +1,37 @@
+# Non-default parts of ~/.zeroclaw/config.toml for the "onix" WhatsApp agent.
+# Generate the base file with `zeroclaw quickstart`, then merge these sections.
+# Never commit the real config: api_key is encrypted, but ~/.zeroclaw/.secret_key decrypts it.
+
+[agents.onix]
+risk_profile = "balanced"
+model_provider = "anthropic.default"
+runtime_profile = "unbounded"
+channels = ["whatsapp.default"]
+
+# Provider-agnostic: add any [providers.models.<type>.<alias>] entry and point model_provider at it.
+[providers.models.anthropic.default]
+model = "claude-sonnet-5-5"
+# api_key is set by quickstart / `zeroclaw config set` (stored encrypted)
+
+[risk_profiles.balanced]
+# Removed from every chat channel (CLI keeps them). Channel-level excluded_tools is NOT honored in v0.9.0.
+excluded_tools = ["git_forge", "git_operations", "browser_open", "screenshot", "canvas", "pushover", "model_switch", "model_routing_config", "proxy_config"]
+
+[runtime_profiles.unbounded.thinking]
+# shortcut: thinking off works around upstream #12401 (signed thinking blocks 400 after tool-context collapse);
+# set back to "medium" once on a release containing PR #12479 (expected v0.9.1).
+default_level = "off"
+
+[channels.whatsapp.default]
+enabled = true
+mode = "business"              # dedicated agent number; drops fromMe echoes
+session_path = "/home/<user>/.zeroclaw/data/whatsapp.db"
+push_name = "Onix"
+dm_policy = "allowlist"
+group_policy = "ignore"
+approval_timeout_secs = 300    # unanswered approvals are denied
+
+[peer_groups.whatsapp_default]
+channel = "whatsapp.default"
+agents = ["onix"]
+external_peers = ["+57XXXXXXXXXX"]   # your own number: the only sender allowed to command the agent

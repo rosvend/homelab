@@ -1,2 +1,2 @@
 # homelab
-My own homelab services (Pihole, Tailscale, Jellyfin &amp; Picoclaw)
+My own homelab services (Pi-hole, Tailscale, Jellyfin & a ZeroClaw WhatsApp agent — see [zeroclaw/](zeroclaw/))
